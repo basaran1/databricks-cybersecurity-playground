@@ -1,7 +1,7 @@
 resources:
   jobs:
     dlt_cyber_demo_setup:
-      name: 'DLT Cyber Demo: Setup'
+      name: 'SDP Cyber Demo: Setup'
       tasks:
         - task_key: setup
           notebook_task:

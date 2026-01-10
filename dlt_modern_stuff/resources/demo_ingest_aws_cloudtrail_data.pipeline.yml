@@ -1,7 +1,7 @@
 resources:
   pipelines:
     demo_ingest_aws_cloudtrail_data:
-      name: 'DLT Cyber Demo: Ingest AWS Cloudtrail data'
+      name: 'SDP Cyber Demo: Ingest AWS Cloudtrail data'
       configuration:
         "conf.gold_catalog_name": ${var.catalog_name}
         "conf.gold_schema_name": ${var.normalized_schema_name}

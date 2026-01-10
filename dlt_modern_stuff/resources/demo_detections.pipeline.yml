@@ -1,7 +1,7 @@
 resources:
   pipelines:
     demo_detections:
-      name: 'DLT Cyber Demo: Detections'
+      name: 'SDP Cyber Demo: Detections'
       configuration:
         "conf.azure_tenant_id": ${var.azure_tenant_id}
         "conf.eh_ns": ${var.eventhub_namespace}

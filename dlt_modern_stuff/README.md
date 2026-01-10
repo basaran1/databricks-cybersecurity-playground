@@ -1,14 +1,15 @@
 # dlt_modern_stuff
 
-This directory contains a source code that demonstrates use of latest Delta Live Tables (DLT) features for cybersecurity use cases.  You can find more information in the [blog post](https://alexott.blogspot.com/2025/03/effective-use-of-latest-dlt-features.html).
+This directory contains a source code that demonstrates use of latest Spark Declarative Pipelines (SDP, former Delta Live Tables, DLT) features for cybersecurity use cases.  You can find more information in the [blog post](https://alexott.blogspot.com/2025/03/effective-use-of-latest-dlt-features.html).
 
-In general, this project consists of three DLT pipelines that perform data ingestion, normalization to [Open Cybersecurity Schema Framework (OCSF)](https://schema.ocsf.io/), and doing a rudimentary detections against normalized data as it's shown on the image below:
+In general, this project consists of four SDP pipelines that perform data ingestion, normalization to [Open Cybersecurity Schema Framework (OCSF)](https://schema.ocsf.io/), and doing a rudimentary detections against normalized data as it's shown on the image below:
 
 1. Ingestion of Apache Web and Nginx logs into `apache_web` table and then normalizing it into a table corresponding to OCSF's HTTP activity.
 2. Ingestion of Zeek data:
-  * Zeek HTTP data into `zeek_http` table,  and then normalizing it into an `http` table corresponding to OCSF's HTTP activity.  
+  * Zeek HTTP data into `zeek_http` table,  and then normalizing it into an `http` table corresponding to OCSF's HTTP activity.
   * Zeek Conn data into `zeek_conn` table,  and then normalizing it into a `network` table corresponding to OCSF's Network activity.
-3. Detection pipeline that does the following:
+3. Ingestion of AWS Cloudtrail data into the `aws_cloudtrail` table.  **Note**: Normalization into OCSF isn't implemented yet.
+4. Detection pipeline that does the following:
   * Matches network connections data from `network` table against `iocs` table.
   * Checks HTTP logs from `http` table for admin pages scans from external parties.
   * All matches are stored in the `detections` table, and optionally pushed to EventHubs and/or Splunk.
@@ -19,7 +20,7 @@ In general, this project consists of three DLT pipelines that perform data inges
 ## Setting up & running
 
 > [!IMPORTANT]
-This bundle uses Serverless compute, so make sure that it's enabled for your workspace (works on [Databricks Free Edition](https://www.databricks.com/blog/introducing-databricks-free-edition) as well). If it's not, then you need to adjust parameters of the job and DLT pipelines!
+This bundle uses Serverless compute, so make sure that it's enabled for your workspace (works on [Databricks Free Edition](https://www.databricks.com/blog/introducing-databricks-free-edition) as well). If it's not, then you need to adjust parameters of the job and SDP pipelines!
 
 You can install the project two ways:
 
@@ -41,13 +42,14 @@ You can install the project two ways:
 
 4. Click **Deploy** button in the **Deployments** tab on the left - this will create necessary jobs and pipelines
 
-5. Click **Run** button next to the `DLT Cyber Demo: Setup` job.
+5. Click **Run** button next to the `SDP Cyber Demo: Setup` job.
 
-6. Click **Start pipeline** for DLT pipelines to process data and run detections (in the following order):
+6. Click **Start pipeline** for SDP pipelines to process data and run detections (in the following order):
 
- - `DLT Cyber Demo: Ingest Zeek data`
- - `DLT Cyber Demo: Ingest Apache data`
- - `DLT Cyber Demo: Detections`
+ - `SDP Cyber Demo: Ingest Zeek data`
+ - `SDP Cyber Demo: Ingest Apache data`
+ - `SDP Cyber Demo: Ingest AWS Cloudtrail data`
+ - `SDP Cyber Demo: Detections`
 
 ### Setting it up using DABs locally
 
@@ -78,16 +80,16 @@ databricks bundle deploy
 databricks bundle run dlt_cyber_demo_setup
 ```
 
-6. Run DLT pipelines to ingest data:
+6. Run SDP pipelines to ingest data:
 
 ```sh
 databricks bundle run demo_ingest_zeek_data
 databricks bundle run demo_ingest_apache_data
+databricks bundle run demo_ingest_aws_cloudtrail_data
 ```
 
-7. Run DLT pipeline that emulates detections against normalized data:
+7. Run SDP pipeline that emulates detections against normalized data:
 
 ```sh
 databricks bundle run demo_detections
 ```
-
