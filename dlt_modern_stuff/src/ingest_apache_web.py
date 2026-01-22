@@ -29,9 +29,9 @@ dlt.create_streaming_table(
 # COMMAND ----------
 
 apache_web_regex = (
-    r'^(\S+) (\S+) (\S+) \[(.+?)] "(\w+) (\S+) ([^"]+)" (\d{3}) (\d+|-) "(.+)" "(.+)"?$'
+    r'^(\S+) (\S+) (\S+) \[(.+?)] "([^"]+)" (\d{3}) (\d+|-) "([^"]+)" "([^"]+)"?$'
 )
-
+method_path_regex = r'(\w+) (\S+) (.+)'
 
 def read_apache_web(input: str, add_opts: Optional[dict] = None):
     autoloader_opts = {
@@ -43,19 +43,21 @@ def read_apache_web(input: str, add_opts: Optional[dict] = None):
         {
             "host": F.regexp_extract("value", apache_web_regex, 1),
             "user": F.regexp_extract("value", apache_web_regex, 3),
-            "timestamp": F.unix_timestamp(
-                F.regexp_extract("value", apache_web_regex, 4), "dd/MMM/yyyy:HH:mm:ss Z"
+            "timestamp": F.try_to_timestamp(
+                F.regexp_extract("value", apache_web_regex, 4), F.lit("dd/MMM/yyyy:HH:mm:ss Z")
             ).cast("timestamp"),
-            "method": F.regexp_extract("value", apache_web_regex, 5),
-            "path": F.regexp_extract("value", apache_web_regex, 6),
-            "version": F.regexp_extract("value", apache_web_regex, 7),
-            "code": F.regexp_extract("value", apache_web_regex, 8).cast("int"),
-            "size": F.regexp_extract("value", apache_web_regex, 9).cast("long"),
-            "referrer": F.regexp_extract("value", apache_web_regex, 10),
-            "agent": F.regexp_extract("value", apache_web_regex, 11),
-            "ingest_time": F.current_timestamp(),
+            "method_path_version": F.regexp_extract("value", apache_web_regex, 5),
+            "code": F.regexp_extract("value", apache_web_regex, 6).try_cast("int"),
+            "size": F.regexp_extract("value", apache_web_regex, 7).try_cast("long"),
+            "referrer": F.regexp_extract("value", apache_web_regex, 8),
+            "agent": F.regexp_extract("value", apache_web_regex, 9),
         }
-    )
+    ).withColumns({
+            "method": F.regexp_extract("method_path_version", method_path_regex, 1),
+            "path": F.regexp_extract("method_path_version", method_path_regex, 2),
+            "version": F.regexp_extract("method_path_version", method_path_regex, 3),
+
+    }).drop("method_path_version")
     return df
 
 
