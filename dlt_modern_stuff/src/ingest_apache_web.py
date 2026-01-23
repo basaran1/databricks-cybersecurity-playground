@@ -51,6 +51,7 @@ def read_apache_web(input: str, add_opts: Optional[dict] = None):
             "size": F.regexp_extract("value", apache_web_regex, 7).try_cast("long"),
             "referrer": F.regexp_extract("value", apache_web_regex, 8),
             "agent": F.regexp_extract("value", apache_web_regex, 9),
+            "ingest_time": F.current_timestamp(),
         }
     ).withColumns({
             "method": F.regexp_extract("method_path_version", method_path_regex, 1),
