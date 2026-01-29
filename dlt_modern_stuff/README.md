@@ -33,14 +33,17 @@ You can install the project two ways:
 
 2. Open the `dlt_modern_stuff/databricks.yaml` inside create Git Folder.
 
-3. Adjust the following parameters inside the `databricks.yaml` (create necessary objects before use):
+3. Adjust the following parameters inside the `databricks.yaml`:
 
- - `catalog_name` - the name of the existing UC Catalog used in configuration.
- - `silver_schema_name` - the name of an existing UC Schema to put processed data of individual log sources.
- - `normalized_schema_name` - the name of an existing UC Schema to put tables with normalized data, IoCs and Detections tables.
- - `log_files_path` - the path to an existing UC Volume where raw log data will be stored.
+ - `catalog_name` - the name of the UC Catalog used in configuration (will be created automatically during deployment).
+ - `silver_schema_name` - the name of the UC Schema to put processed data of individual log sources (will be created automatically).
+ - `normalized_schema_name` - the name of the UC Schema to put tables with normalized data, IoCs and Detections tables (will be created automatically).
+ - `log_files_path` - the path to UC Volume where raw log data will be stored (will be created automatically as `/Volumes/{catalog_name}/logs/logs/demo`).
 
-4. Click **Deploy** button in the **Deployments** tab on the left - this will create necessary jobs and pipelines
+> [!NOTE]
+> The deployment will automatically create the catalog, schemas (`silver`, `normalized`, and `logs`), and volume defined in `resources/uc_resources.yml`. No manual creation is needed!
+
+4. Click **Deploy** button in the **Deployments** tab on the left - this will create necessary jobs, pipelines, and Unity Catalog resources
 
 5. Click **Run** button next to the `SDP Cyber Demo: Setup` job.
 
@@ -61,14 +64,17 @@ You can install the project two ways:
 databricks configure
 ```
 
-3. Set environment variable `DATABRICKS_CONFIG_PROFILE` to the name of Databricks CLI profile you configured, and configure necessary variables in the `dev` profile of `databricks.yml` file.  You need to specify the following (create necessary objects before use):
+3. Set environment variable `DATABRICKS_CONFIG_PROFILE` to the name of Databricks CLI profile you configured, and configure necessary variables in the `dev` profile of `databricks.yml` file.  You need to specify the following:
 
- - `catalog_name` - the name of the existing UC Catalog used in configuration.
- - `silver_schema_name` - the name of an existing UC Schema to put processed data of individual log sources.
- - `normalized_schema_name` - the name of an existing UC Schema to put tables with normalized data, IoCs and Detections tables.
- - `log_files_path` - the path to an existing UC Volume where raw log data will be stored.
+ - `catalog_name` - the name of the UC Catalog used in configuration (will be created automatically during deployment).
+ - `silver_schema_name` - the name of the UC Schema to put processed data of individual log sources (will be created automatically).
+ - `normalized_schema_name` - the name of the UC Schema to put tables with normalized data, IoCs and Detections tables (will be created automatically).
+ - `log_files_path` - the path to UC Volume where raw log data will be stored (will be created automatically as `/Volumes/{catalog_name}/logs/logs/demo`).
 
-4. To deploy a development copy of this project, type:
+> [!NOTE]
+> The deployment will automatically create the catalog, schemas (`silver`, `normalized`, and `logs`), and volume defined in `resources/uc_resources.yml`. No manual creation is needed!
+
+4. To deploy a development copy of this project (this will create Unity Catalog resources, jobs, and pipelines), type:
 
 ```sh
 databricks bundle deploy

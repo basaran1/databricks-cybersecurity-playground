@@ -1,0 +1,37 @@
+# Unity Catalog resources for the cybersecurity demo
+# This file defines the catalog, schemas, and volumes needed for the project
+
+resources:
+  # Define the catalog
+  catalogs:
+    cybersecurity_catalog:
+      name: ${var.catalog_name}
+      comment: "Catalog for cybersecurity demo data"
+      properties:
+        purpose: "demo"
+
+  # Define schemas
+  schemas:
+    silver_schema:
+      catalog_name: ${var.catalog_name}
+      name: ${var.silver_schema_name}
+      comment: "Schema for processed data of individual log sources"
+
+    normalized_schema:
+      catalog_name: ${var.catalog_name}
+      name: ${var.normalized_schema_name}
+      comment: "Schema for normalized data, IoCs and Detections tables"
+
+    logs_schema:
+      catalog_name: ${var.catalog_name}
+      name: logs
+      comment: "Schema for log file volumes"
+
+  # Define volume for raw log data
+  volumes:
+    logs_volume:
+      catalog_name: ${var.catalog_name}
+      schema_name: logs
+      name: logs
+      volume_type: MANAGED
+      comment: "Volume for storing raw log data files"
